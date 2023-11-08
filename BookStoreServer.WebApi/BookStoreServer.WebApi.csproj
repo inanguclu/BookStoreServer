@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFrameworkCore.Pagination" Version="7.0.5" />
+    <PackageReference Include="FuzzyString" Version="1.0.0" />
+    <PackageReference Include="GSF.Core" Version="2.4.28" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
