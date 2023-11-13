@@ -10,6 +10,7 @@ public sealed class Book
     public decimal Price { get; set; } = 0;
     public int Quantity { get; set; } = 0;
     public bool IsActive { get; set; } = true;
+    public bool IsDeleted { get; set; } = false;
     public string ISBN { get; set; } = string.Empty;
     public DateTime CreateAt{ get; set; }=DateTime.Now;
 
