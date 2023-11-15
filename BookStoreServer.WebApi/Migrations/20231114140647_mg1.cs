@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace BookStoreServer.WebApi.Migrations
 {
     /// <inheritdoc />
@@ -21,9 +23,11 @@ namespace BookStoreServer.WebApi.Migrations
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Summary = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CoverImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price_Value = table.Column<decimal>(type: "money", nullable: false),
+                    Price_Currency = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     ISBN = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -51,26 +55,56 @@ namespace BookStoreServer.WebApi.Migrations
                 name: "bookCategories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     BookId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_bookCategories", x => x.Id);
+                    table.PrimaryKey("PK_bookCategories", x => new { x.BookId, x.CategoryId });
                     table.ForeignKey(
                         name: "FK_bookCategories_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_bookCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "IsActive", "IsDeleted", "Name" },
+                values: new object[,]
+                {
+                    { 1, true, false, "Korku" },
+                    { 2, true, false, "Bilim Kurgu" },
+                    { 3, true, false, "Tarih" },
+                    { 4, true, false, "Edebiyat" },
+                    { 5, true, false, "Çocuk" },
+                    { 6, true, false, "Psikoloji" },
+                    { 7, true, false, "Din" },
+                    { 8, true, false, "Felsefe" },
+                    { 9, true, false, "Bilim" },
+                    { 10, true, false, "Sanat" },
+                    { 11, true, false, "Spor" },
+                    { 12, true, false, "Gezi" },
+                    { 13, true, false, "Dergi" },
+                    { 14, true, false, "Mizah" },
+                    { 15, true, false, "Kişisel Gelişim" },
+                    { 16, true, false, "Yemek" },
+                    { 17, true, false, "Hobi" },
+                    { 18, true, false, "Referans" },
+                    { 19, true, false, "Eğitim" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_bookCategories_BookId",
+                name: "IX_bookCategories_CategoryId",
                 table: "bookCategories",
-                column: "BookId");
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
@@ -80,10 +114,10 @@ namespace BookStoreServer.WebApi.Migrations
                 name: "bookCategories");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Books");
 
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "Categories");
         }
     }
 }
