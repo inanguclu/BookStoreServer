@@ -10,7 +10,7 @@ using System.Reflection.Metadata.Ecma335;
 namespace BookStoreServer.WebApi.Controllers;
 [Route("api/[controller]/[action]")]
 [ApiController]
-public class BooksController : ControllerBase
+public sealed class BooksController : ControllerBase
 {
 
     [HttpPost]
