@@ -31,7 +31,7 @@ public sealed class BooksController : ControllerBase
         }
         else
         {
-            books = context.bookCategories
+            books = context.BookCategories
                 .Where(p => p.CategoryId == request.CategoryId)
                 .Include(p => p.Book)
                 .Select(s => s.Book)

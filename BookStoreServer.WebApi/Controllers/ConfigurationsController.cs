@@ -50,7 +50,7 @@ public sealed class ConfigurationsController : ControllerBase
             };
             bookCategories.Add(bookCategory);
         }
-        context.bookCategories.AddRange(bookCategories);
+        context.BookCategories.AddRange(bookCategories);
 
 
         context.SaveChanges();

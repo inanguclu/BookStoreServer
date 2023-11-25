@@ -14,8 +14,8 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<Category> Categories { get; set; }
     public DbSet<Book> Books { get; set; }
-    public DbSet<BookCategory> bookCategories { get; set; }
-    public DbSet<Order> orders { get; set; }    
+    public DbSet<BookCategory> BookCategories { get; set; }
+    public DbSet<Order> Orders { get; set; }    
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +25,13 @@ public sealed class AppDbContext : DbContext
             price.Property(p => p.Value).HasColumnType("money");
             price.Property(p => p.Currency).HasMaxLength(5);
         });
+
+        modelBuilder.Entity<Order>().OwnsOne(p => p.Price, price =>
+        {
+            price.Property(p => p.Value).HasColumnType("money");
+            price.Property(p=>p.Currency).HasMaxLength(5);  
+        });
+
         modelBuilder.Entity<BookCategory>().HasKey(p => new { p.BookId, p.CategoryId });
 
         // domain driven desing

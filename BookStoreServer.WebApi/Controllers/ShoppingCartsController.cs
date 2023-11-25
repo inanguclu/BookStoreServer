@@ -111,7 +111,7 @@ public sealed class ShoppingCartsController : ControllerBase
             }
 
             AppDbContext context = new();  
-            context.orders.AddRange(orders);
+            context.Orders.AddRange(orders);
             context.SaveChanges();
             return NoContent();
         }else
