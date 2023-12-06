@@ -15,15 +15,15 @@ public sealed class ShoppingCartsController : ControllerBase
 {
     [HttpPost]
     public IActionResult Payment(PaymentDto requestDto) 
-    {
+    {//buraya mı gelmesi laızm ödemenin evet hocam gelmiyor :)
         decimal total = 0;
         decimal commission = 0;//komisyon
         foreach (var book in requestDto.Books)
         {
             total += book.Price.Value;
         }
-
-        commission = total * 1.2m / 100;
+        commission= total;
+       // commission = total * 1.2m / 100;
 
         Currency currency = Currency.TRY;
         string requestCurrency = requestDto.Books[0]?.Price?.Currency;
