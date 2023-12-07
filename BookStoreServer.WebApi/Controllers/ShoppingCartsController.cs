@@ -73,14 +73,16 @@ public sealed class ShoppingCartsController : ControllerBase
         buyer.Id = Guid.NewGuid().ToString();
         request.Buyer = buyer;
 
-        Address ShippingAddress = requestDto.ShippingAddress;
-        Address BillingAddress = requestDto.BillingAddress;
+        request.ShippingAddress=requestDto.ShippingAddress;
+        request.BillingAddress = requestDto.BillingAddress;
         
 
         List<BasketItem> basketItems = new List<BasketItem>();
         foreach (var book in requestDto.Books)
         {
-            BasketItem item = new BasketItem();   
+            BasketItem item = new BasketItem();
+            item.Category1 = "Book";
+            item.Category2 = "Book";
             item.Id=book.Id.ToString();
             item.Name = book.Title;
             item.ItemType=BasketItemType.PHYSICAL.ToString();
@@ -118,10 +120,6 @@ public sealed class ShoppingCartsController : ControllerBase
         {
             return BadRequest(payment.ErrorMessage);
         }
-
-        //status:Success|failure
-        //errormessage: hata mesajı var 
-        return NoContent();
     }
 }
 
