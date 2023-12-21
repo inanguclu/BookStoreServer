@@ -14,7 +14,7 @@ namespace BookStoreServer.WebApi.Controllers;
 public sealed class ShoppingCartsController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Payment(PaymentDto requestDto) 
+    public IActionResult Payment(PaymentDto requestDto)
     {//buraya mı gelmesi laızm ödemenin evet hocam gelmiyor :)
         decimal total = 0;
         decimal commission = 0;//komisyon
@@ -22,14 +22,14 @@ public sealed class ShoppingCartsController : ControllerBase
         {
             total += book.Price.Value;
         }
-        commission= total;
-       // commission = total * 1.2m / 100;
+        commission = total;
+        // commission = total * 1.2m / 100;
 
         Currency currency = Currency.TRY;
         string requestCurrency = requestDto.Books[0]?.Price?.Currency;
         if (!string.IsNullOrEmpty(requestCurrency))
         {
-            switch(requestCurrency) 
+            switch (requestCurrency)
             {
                 case "₺":
                     currency = Currency.TRY; break;
@@ -38,14 +38,14 @@ public sealed class ShoppingCartsController : ControllerBase
                 case "£":
                     currency = Currency.GBP; break;
                 case "€":
-                    currency = Currency.EUR; break; 
+                    currency = Currency.EUR; break;
                 default:
                     throw new Exception("Para birimi bulunamadı");
                     break;
 
             }
         }
-        else 
+        else
         {
             throw new Exception("Sepette ürününüz yok!");
         }
@@ -57,7 +57,7 @@ public sealed class ShoppingCartsController : ControllerBase
 
         CreatePaymentRequest request = new CreatePaymentRequest();
         request.Locale = Locale.TR.ToString();
-        request.ConversationId =Guid.NewGuid().ToString();
+        request.ConversationId = Guid.NewGuid().ToString();
         request.Price = total.ToString();//ödeme kısmı
         request.PaidPrice = commission.ToString();//komisyonlu odeme kısmı
         request.Currency = currency.ToString();
@@ -73,9 +73,9 @@ public sealed class ShoppingCartsController : ControllerBase
         buyer.Id = Guid.NewGuid().ToString();
         request.Buyer = buyer;
 
-        request.ShippingAddress=requestDto.ShippingAddress;
+        request.ShippingAddress = requestDto.ShippingAddress;
         request.BillingAddress = requestDto.BillingAddress;
-        
+
 
         List<BasketItem> basketItems = new List<BasketItem>();
         foreach (var book in requestDto.Books)
@@ -83,40 +83,44 @@ public sealed class ShoppingCartsController : ControllerBase
             BasketItem item = new BasketItem();
             item.Category1 = "Book";
             item.Category2 = "Book";
-            item.Id=book.Id.ToString();
+            item.Id = book.Id.ToString();
             item.Name = book.Title;
-            item.ItemType=BasketItemType.PHYSICAL.ToString();
-            item.Price=book.Price.Value.ToString();
-            basketItems.Add(item);  
+            item.ItemType = BasketItemType.PHYSICAL.ToString();
+            item.Price = book.Price.Value.ToString();
+            basketItems.Add(item);
         }
 
         request.BasketItems = basketItems;
 
         Payment payment = Iyzipay.Model.Payment.Create(request, options);
 
-        if (payment.Status=="success")
+        if (payment.Status == "success")
         {
+
+            string orderNumber = Order.GetNewOrderNumber();
 
             List<Order> orders = new();
             foreach (var book in requestDto.Books)
             {
                 Order order = new()
                 {
-                    OrderNumber = request.BasketId,
+                    OrderNumber = orderNumber,
                     BookId = book.Id,
                     Price = new Money(book.Price.Value, book.Price.Currency),
                     PaymentDate = DateTime.Now,
                     PaymentType = "Credit Cart",
-                    PaymentNumber = payment.PaymentId
+                    PaymentNumber = payment.PaymentId,
+                    CreatedAt = DateTime.Now
                 };
-                orders.Add(order);  
+                orders.Add(order);
             }
 
-            AppDbContext context = new();  
+            AppDbContext context = new();
             context.Orders.AddRange(orders);
             context.SaveChanges();
             return NoContent();
-        }else
+        }
+        else
         {
             return BadRequest(payment.ErrorMessage);
         }
