@@ -27,8 +27,7 @@ public sealed class Order
 
         string initialLatter = "TNR";//seri no
         string year = DateTime.Now.Year.ToString();//siparişin mevcut yılı
-        string orderNumber = initialLatter + year;
-        string newOrderNumber = orderNumber;//kontrol için orjinal degeri saklıyorum 
+        string newOrderNumber = initialLatter + year;
 
         AppDbContext context = new();
         var lastOrder = context.Orders.OrderByDescending(o => o.Id).FirstOrDefault();//son sşparişi aldım
@@ -37,54 +36,30 @@ public sealed class Order
         if (currentOrderNumber != null)//son siparis varmı kontrolu yapıyorum
         {
             string currentYear = currentOrderNumber.Substring(3, 4);//son siparisin yılını aldım
-
-            if (currentYear == year)//yıl ile mevcut yılı kontrol ediyorum
-            {
-                currentOrderNumber = currentOrderNumber.Substring(7);//son siparisin numarasını aldım
-                int currentOrderNumberInt = int.Parse(currentOrderNumber);//son siparis numarasını inte cevirdim 
-                
-                bool isOrderNumberUnique = false;//siparis numaramın unique olmasını kontrol ediyorum
-                while (!isOrderNumberUnique)
-                {
-
-                    currentOrderNumberInt++;
-                    orderNumber = newOrderNumber + currentOrderNumberInt.ToString("D9");
-
-                    var order = context.Orders.FirstOrDefault(o => o.OrderNumber == orderNumber);
-
-                    if (order == null)
-                    {
-                        isOrderNumberUnique = true;
-                    }
-                }
-
-            }
-            else
-            {
-                int currentOrderNumberInt = 0;
-                bool isOrderNumberUnique = false;
-                while (!isOrderNumberUnique)
-                {
-
-                    currentOrderNumberInt++;
-                    orderNumber = newOrderNumber + currentOrderNumberInt.ToString("D9");
-
-                    var order = context.Orders.FirstOrDefault(o => o.OrderNumber == orderNumber);
-
-                    if (order == null)
-                    {
-                        isOrderNumberUnique = true;
-                    }
-                }
-                
-            }
-
+            int startIndex = (currentYear == year) ? 7 : 0;
+            GenerateUniqueOrderNumber(context, ref newOrderNumber, currentOrderNumber.Substring(startIndex));
         }
         else
         {
-            orderNumber += "000000001";
+            newOrderNumber += "000000001";
         }
-        return orderNumber;
+        return newOrderNumber;
+    }
 
+    private static void GenerateUniqueOrderNumber(AppDbContext context,ref string newOrderNumber, string currentOrderNumStr)
+    {
+        int currentOrderNumberInt = int.TryParse(currentOrderNumStr, out var num) ? num : 0;
+        bool isOrderNumberUnique = false;
+
+        while(!isOrderNumberUnique)
+        {
+            currentOrderNumberInt++;
+            newOrderNumber = currentOrderNumberInt.ToString("D9");
+            var order = context.Orders.FirstOrDefault(o => o.OrderNumber == newOrderNumber);
+            if (order == null)
+            {
+                isOrderNumberUnique = true;
+            }
+        }
     }
 }
