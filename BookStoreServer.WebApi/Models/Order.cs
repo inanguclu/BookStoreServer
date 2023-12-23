@@ -54,8 +54,9 @@ public sealed class Order
         while(!isOrderNumberUnique)
         {
             currentOrderNumberInt++;
-            newOrderNumber = currentOrderNumberInt.ToString("D9");
-            var order = context.Orders.FirstOrDefault(o => o.OrderNumber == newOrderNumber);
+            newOrderNumber += currentOrderNumberInt.ToString("D9");
+            string checkOrderNumber = newOrderNumber;
+            var order = context.Orders.FirstOrDefault(o => o.OrderNumber == checkOrderNumber);
             if (order == null)
             {
                 isOrderNumberUnique = true;
