@@ -21,6 +21,7 @@ public sealed class Order
     public DateTime PaymentDate { get; set; }
     public string PaymentType { get; set; }
     public string PaymentNumber { get; set; }
+    public OrderStatus status { get; set; }
 
     public static string GetNewOrderNumber()
     {
@@ -62,5 +63,15 @@ public sealed class Order
                 isOrderNumberUnique = true;
             }
         }
+    }
+
+    public enum OrderStatus
+    {
+        OnayBekliyor,
+        Hazırlanıyor,
+        Kargoda,
+        TeslimEdildi,
+        Reddedildi,
+        Iade
     }
 }
