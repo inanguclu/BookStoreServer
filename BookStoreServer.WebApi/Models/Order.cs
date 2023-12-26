@@ -65,13 +65,7 @@ public sealed class Order
         }
     }
 
-    public enum OrderStatus
-    {
-        OnayBekliyor,
-        Hazırlanıyor,
-        Kargoda,
-        TeslimEdildi,
-        Reddedildi,
-        Iade
-    }
+
+    
+    
 }
