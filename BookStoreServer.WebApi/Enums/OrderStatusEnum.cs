@@ -1,5 +1,11 @@
 ﻿namespace BookStoreServer.WebApi.Enums;
 
-public class OrderStatusEnum
+public enum OrderStatusEnum
 {
+    OnayBekliyor,
+    Hazırlanıyor,
+    Kargoda,
+    TeslimEdildi,
+    Reddedildi,
+    Iade
 }
