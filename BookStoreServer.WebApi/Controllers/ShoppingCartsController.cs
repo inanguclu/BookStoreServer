@@ -1,5 +1,6 @@
 ﻿using BookStoreServer.WebApi.Context;
 using BookStoreServer.WebApi.Dtos;
+using BookStoreServer.WebApi.Enums;
 using BookStoreServer.WebApi.Models;
 using BookStoreServer.WebApi.ValueObjects;
 using Iyzipay;
@@ -116,6 +117,15 @@ public sealed class ShoppingCartsController : ControllerBase
             }
 
             AppDbContext context = new();
+            OrderStatus orderStatus = new()
+            {
+                OrderNumber = orderNumber,
+                Status = OrderStatusEnum.AwaitingApproval,
+                StatusDate = DateTime.Now,
+            };
+            
+            context.OrderStatuses.Add(orderStatus);
+            
             context.Orders.AddRange(orders);
             context.SaveChanges();
             return NoContent();

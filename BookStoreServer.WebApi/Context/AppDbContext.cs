@@ -22,6 +22,10 @@ public sealed class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<OrderStatus>().HasIndex(p => 
+        new { p.Status,p.OrderNumber}).IsUnique();
+
+
         modelBuilder.Entity<Book>().OwnsOne(p => p.Price, price =>
         {
             price.Property(p => p.Value).HasColumnType("money");

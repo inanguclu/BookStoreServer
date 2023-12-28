@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreServer.WebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231226120300_mg2")]
-    partial class mg2
+    [Migration("20231226162932_mg1")]
+    partial class mg1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -272,9 +272,14 @@ namespace BookStoreServer.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("statusId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
+
+                    b.HasIndex("statusId");
 
                     b.ToTable("Orders");
                 });
@@ -287,8 +292,9 @@ namespace BookStoreServer.WebApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -297,9 +303,6 @@ namespace BookStoreServer.WebApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
 
                     b.ToTable("OrderStatuses");
                 });
@@ -358,6 +361,12 @@ namespace BookStoreServer.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BookStoreServer.WebApi.Models.OrderStatus", "status")
+                        .WithMany()
+                        .HasForeignKey("statusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("BookStoreServer.WebApi.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<int>("OrderId")
@@ -383,21 +392,8 @@ namespace BookStoreServer.WebApi.Migrations
 
                     b.Navigation("Price")
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("BookStoreServer.WebApi.Models.OrderStatus", b =>
-                {
-                    b.HasOne("BookStoreServer.WebApi.Models.Order", null)
-                        .WithOne("status")
-                        .HasForeignKey("BookStoreServer.WebApi.Models.OrderStatus", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BookStoreServer.WebApi.Models.Order", b =>
-                {
-                    b.Navigation("status")
-                        .IsRequired();
+                    b.Navigation("status");
                 });
 #pragma warning restore 612, 618
         }
