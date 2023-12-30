@@ -21,7 +21,11 @@ public sealed class Order
     public DateTime PaymentDate { get; set; }
     public string PaymentType { get; set; }
     public string PaymentNumber { get; set; }
-    public OrderStatus status { get; set; }
+
+
+    [ForeignKey("OrderStatus")]
+    public int OrderStatusId { get; set; }
+    public OrderStatus OrderStatus { get; set; }
 
     public static string GetNewOrderNumber()
     {

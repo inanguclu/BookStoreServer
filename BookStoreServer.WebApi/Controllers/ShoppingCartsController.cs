@@ -16,7 +16,7 @@ namespace BookStoreServer.WebApi.Controllers;
 public sealed class ShoppingCartsController : ControllerBase
 {
     [HttpPost]
-    public async IActionResult Payment(PaymentDto requestDto)
+    public async Task<IActionResult> Payment(PaymentDto requestDto)
     {//buraya mı gelmesi laızm ödemenin evet hocam gelmiyor :)
         decimal total = 0;
         decimal commission = 0;//komisyon
@@ -140,15 +140,6 @@ public sealed class ShoppingCartsController : ControllerBase
                 <p>Ödeme tarihiniz: {DateTime.Now}</p>
                 <p>Ödeme tipiniz: Kredi Kartı</p>
                 <p>Ödeme durumunuz: Onay Bekliyor</p>");
-
-
-
-
-
-
-
-
-
 
             return NoContent();
         }

@@ -258,6 +258,9 @@ namespace BookStoreServer.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrderStatusId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
@@ -269,14 +272,11 @@ namespace BookStoreServer.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("statusId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("statusId");
+                    b.HasIndex("OrderStatusId");
 
                     b.ToTable("Orders");
                 });
@@ -361,9 +361,9 @@ namespace BookStoreServer.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookStoreServer.WebApi.Models.OrderStatus", "status")
+                    b.HasOne("BookStoreServer.WebApi.Models.OrderStatus", "OrderStatus")
                         .WithMany()
-                        .HasForeignKey("statusId")
+                        .HasForeignKey("OrderStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -390,10 +390,10 @@ namespace BookStoreServer.WebApi.Migrations
 
                     b.Navigation("Book");
 
+                    b.Navigation("OrderStatus");
+
                     b.Navigation("Price")
                         .IsRequired();
-
-                    b.Navigation("status");
                 });
 #pragma warning restore 612, 618
         }

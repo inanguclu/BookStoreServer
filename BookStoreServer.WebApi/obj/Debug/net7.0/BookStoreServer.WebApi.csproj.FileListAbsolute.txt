@@ -81,3 +81,9 @@ C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi
 C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\Iyzipay.dll
 C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\GenericEmailService.dll
+C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\MailKit.dll
+C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\MimeKit.dll
+C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\inang\.vscode\MyProjem\BookStore\BookStoreServer\BookStoreServer.WebApi\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Security.Cryptography.Pkcs.dll
