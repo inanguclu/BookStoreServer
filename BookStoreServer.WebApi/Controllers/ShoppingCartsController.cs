@@ -2,6 +2,7 @@
 using BookStoreServer.WebApi.Dtos;
 using BookStoreServer.WebApi.Enums;
 using BookStoreServer.WebApi.Models;
+using BookStoreServer.WebApi.Services;
 using BookStoreServer.WebApi.ValueObjects;
 using Iyzipay;
 using Iyzipay.Model;
@@ -15,7 +16,7 @@ namespace BookStoreServer.WebApi.Controllers;
 public sealed class ShoppingCartsController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Payment(PaymentDto requestDto)
+    public async IActionResult Payment(PaymentDto requestDto)
     {//buraya mı gelmesi laızm ödemenin evet hocam gelmiyor :)
         decimal total = 0;
         decimal commission = 0;//komisyon
@@ -125,9 +126,30 @@ public sealed class ShoppingCartsController : ControllerBase
             };
             
             context.OrderStatuses.Add(orderStatus);
-            
             context.Orders.AddRange(orders);
             context.SaveChanges();
+
+
+
+            string response = await MailService.SendEmailAsync(requestDto.Buyer.Email, "Siparişiniz Alındı", $@"
+
+                <h1>Siparişiniz Alındı</h1>
+                <p>Sipariş numaranız: {orderNumber}</p>
+                <p>Ödeme numaranız: {payment.PaymentId}</p>
+                <p>Ödeme tutarınız: {payment.PaidPrice}</p>
+                <p>Ödeme tarihiniz: {DateTime.Now}</p>
+                <p>Ödeme tipiniz: Kredi Kartı</p>
+                <p>Ödeme durumunuz: Onay Bekliyor</p>");
+
+
+
+
+
+
+
+
+
+
             return NoContent();
         }
         else

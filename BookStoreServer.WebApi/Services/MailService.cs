@@ -5,20 +5,20 @@ namespace BookStoreServer.WebApi.Services;
 
 public static class MailService
 {
-    public static async Task<string> SendEmailAsync(string email, string subject, string body)
+    public static async Task<string> SendEmailAsync (string email, string subject, string body)
     {
         EmailConfigurations configurations = new(
-            Smtp: "smtp.example.com",
-            Password: "password",
+            Smtp: "smtp.office365.com",
+            Password: "Iyzico.3838",
             Port: 587,
-            SSL: true,
+            SSL: false,
             Html: true);
 
         List<string> emails = new() { email };
 
         EmailModel<Stream> model = new(
             Configurations: configurations,
-            FromEmail: "mymail@gmail.com",
+            FromEmail: "iyzico3838@hotmail.com",
             ToEmails: emails,
             Subject: subject,
             Body: body,
@@ -26,6 +26,9 @@ public static class MailService
 
 
         string response = await EmailService.SendEmailWithMailKitAsync(model);
+
+
+        return response;
 
     }
 }
