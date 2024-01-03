@@ -23,10 +23,6 @@ public sealed class Order
     public string PaymentNumber { get; set; }
 
 
-    [ForeignKey("OrderStatus")]
-    public int OrderStatusId { get; set; }
-    public OrderStatus OrderStatus { get; set; }
-
     public static string GetNewOrderNumber()
     {
 

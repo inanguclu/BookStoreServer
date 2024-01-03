@@ -52,7 +52,7 @@ public sealed class ShoppingCartsController : ControllerBase
             throw new Exception("Sepette ürününüz yok!");
         }
 
-        Options options = new Options();
+        Iyzipay.Options options = new Iyzipay.Options();
         options.ApiKey = "sandbox-ynaf4mn2PtmVxCCIoWFzDU4yQVZZVVkN";
         options.SecretKey = "sandbox-cnwAy4gu5vv5xi7gJEVcdmwouuA2LLgK";
         options.BaseUrl = "https://sandbox-api.iyzipay.com";
@@ -118,6 +118,8 @@ public sealed class ShoppingCartsController : ControllerBase
             }
 
             AppDbContext context = new();
+
+
             OrderStatus orderStatus = new()
             {
                 OrderNumber = orderNumber,

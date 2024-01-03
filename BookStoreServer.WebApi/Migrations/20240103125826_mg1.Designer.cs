@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreServer.WebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231226194352_mg5")]
-    partial class mg5
+    [Migration("20240103125826_mg1")]
+    partial class mg1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -272,14 +272,9 @@ namespace BookStoreServer.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("statusId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("statusId");
 
                     b.ToTable("Orders");
                 });
@@ -364,12 +359,6 @@ namespace BookStoreServer.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookStoreServer.WebApi.Models.OrderStatus", "status")
-                        .WithMany()
-                        .HasForeignKey("statusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsOne("BookStoreServer.WebApi.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<int>("OrderId")
@@ -395,8 +384,6 @@ namespace BookStoreServer.WebApi.Migrations
 
                     b.Navigation("Price")
                         .IsRequired();
-
-                    b.Navigation("status");
                 });
 #pragma warning restore 612, 618
         }

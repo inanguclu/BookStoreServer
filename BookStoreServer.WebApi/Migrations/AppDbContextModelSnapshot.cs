@@ -258,9 +258,6 @@ namespace BookStoreServer.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderStatusId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
@@ -275,8 +272,6 @@ namespace BookStoreServer.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("OrderStatusId");
 
                     b.ToTable("Orders");
                 });
@@ -361,12 +356,6 @@ namespace BookStoreServer.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookStoreServer.WebApi.Models.OrderStatus", "OrderStatus")
-                        .WithMany()
-                        .HasForeignKey("OrderStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsOne("BookStoreServer.WebApi.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<int>("OrderId")
@@ -389,8 +378,6 @@ namespace BookStoreServer.WebApi.Migrations
                         });
 
                     b.Navigation("Book");
-
-                    b.Navigation("OrderStatus");
 
                     b.Navigation("Price")
                         .IsRequired();

@@ -1,4 +1,7 @@
-﻿using GenericEmailService;
+﻿using BookStoreServer.WebApi.Options;
+using BookStoreServer.WebApi.Utilities;
+using GenericEmailService;
+using Microsoft.Extensions.Options;
 using System.Net.Mail;
 
 namespace BookStoreServer.WebApi.Services;
@@ -7,18 +10,21 @@ public static class MailService
 {
     public static async Task<string> SendEmailAsync (string email, string subject, string body)
     {
+        var emailSettings= ServiceTool.ServiceProvider.GetRequiredService<IOptions<EmailSettings>>();
+
+
         EmailConfigurations configurations = new(
-            Smtp: "smtp.office365.com",
-            Password: "Iyzico.3838",
-            Port: 587,
-            SSL: false,
+            Smtp: emailSettings.Value.SMTP,
+            Password:emailSettings.Value.Password,
+            Port: emailSettings.Value.Port,
+            SSL: emailSettings.Value.SSL,
             Html: true);
 
         List<string> emails = new() { email };
 
         EmailModel<Stream> model = new(
             Configurations: configurations,
-            FromEmail: "iyzico3838@hotmail.com",
+            FromEmail: emailSettings.Value.Email,
             ToEmails: emails,
             Subject: subject,
             Body: body,
