@@ -42,7 +42,33 @@ public sealed class BooksController : ControllerBase
                 .ToList();
 
         }
-        return Ok(books);
+        List<BookDto> requestDto = new();
+        foreach (var book in books) 
+        {
+            var bookDto = new BookDto()
+            {
+                Title = book.Title,
+                ISBN = book.ISBN,
+                Id = book.Id,
+                Author = book.Author,
+                Categories =
+                context.BookCategories
+                .Where(p => p.BookId == book.Id)
+                .Include(p => p.Category)
+                .Select(s => s.Category.Name)
+                .ToList(),
+                CoverImageUrl = book.CoverImageUrl,
+                CreateAt = book.CreateAt,
+                IsActive = book.IsActive,
+                IsDeleted = book.IsDeleted,
+                Price = book.Price,
+                Quantity = book.Quantity,
+                Summary = book.Summary,
+            };
+            requestDto.Add(bookDto);
+
+        }
+        return Ok(requestDto);
 
     }
 
