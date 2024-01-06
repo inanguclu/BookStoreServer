@@ -1,4 +1,5 @@
-﻿using BookStoreServer.WebApi.Context;
+﻿using AutoMapper;
+using BookStoreServer.WebApi.Context;
 using BookStoreServer.WebApi.Dtos;
 using BookStoreServer.WebApi.Models;
 using GSF.FuzzyStrings;
@@ -12,17 +13,26 @@ namespace BookStoreServer.WebApi.Controllers;
 [ApiController]
 public sealed class BooksController : ControllerBase
 {
+    private readonly IMapper _mapper;
+    private readonly AppDbContext _context;
+
+
+
+    public BooksController(IMapper mapper, AppDbContext context)
+    {
+        _mapper = mapper;
+        _context = context;
+    }
 
     [HttpPost]
     public IActionResult GetAll(RequestDto request)
     {
-        AppDbContext context = new();
 
         List<Book> books = new();
 
         if (request.CategoryId == null)
         {
-            books = context.Books
+            books = _context.Books
             .Where(p => p.IsActive == true && p.IsDeleted == false)
             .Where(p => p.Title.ToLower().Contains(request.Search.ToLower()) || p.ISBN.Contains(request.Search))
             .OrderByDescending(p => p.CreateAt)
@@ -31,7 +41,7 @@ public sealed class BooksController : ControllerBase
         }
         else
         {
-            books = context.BookCategories
+            books = _context.BookCategories
                 .Where(p => p.CategoryId == request.CategoryId)
                 .Include(p => p.Book)
                 .Select(s => s.Book)
@@ -43,30 +53,38 @@ public sealed class BooksController : ControllerBase
 
         }
         List<BookDto> requestDto = new();
-        foreach (var book in books) 
+        foreach (var book in books)
         {
-            var bookDto = new BookDto()
-            {
-                Title = book.Title,
-                ISBN = book.ISBN,
-                Id = book.Id,
-                Author = book.Author,
-                Categories =
-                context.BookCategories
-                .Where(p => p.BookId == book.Id)
-                .Include(p => p.Category)
-                .Select(s => s.Category.Name)
-                .ToList(),
-                CoverImageUrl = book.CoverImageUrl,
-                CreateAt = book.CreateAt,
-                IsActive = book.IsActive,
-                IsDeleted = book.IsDeleted,
-                Price = book.Price,
-                Quantity = book.Quantity,
-                Summary = book.Summary,
-            };
-            requestDto.Add(bookDto);
+            //var bookDto = new BookDto()
+            //{
+            //    Title = book.Title,
+            //    ISBN = book.ISBN,
+            //    Id = book.Id,
+            //    Author = book.Author,
+            //    Categories =
+            //    context.BookCategories
+            //    .Where(p => p.BookId == book.Id)
+            //    .Include(p => p.Category)
+            //    .Select(s => s.Category.Name)
+            //    .ToList(),
+            //    CoverImageUrl = book.CoverImageUrl,
+            //    CreateAt = book.CreateAt,
+            //    IsActive = book.IsActive,
+            //    IsDeleted = book.IsDeleted,
+            //    Price = book.Price,
+            //    Quantity = book.Quantity,
+            //    Summary = book.Summary,
+            //};
+            //requestDto.Add(bookDto);
 
+
+            BookDto bookDto = _mapper.Map<BookDto>(book);
+            bookDto.Categories = _context.BookCategories
+                                .Where(p => p.BookId == book.Id)
+                                .Include(p => p.Category)
+                                .Select(s => s.Category.Name)
+                                .ToList();
+            requestDto.Add(bookDto);
         }
         return Ok(requestDto);
 

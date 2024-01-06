@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "95bygCRz4YtUeCqW/A0rpMOLQrjWeGtofoqAW+OzcZkquKWjBi/e9JOqRUS9SZNdI7D7Ne9zj2Lbm8mM2o+Chg==",
+  "dgSpecHash": "EoGpaHmTCNUh9A7XxdkZkaAkJndcG7h0/EzfAI0Z4uAXx6vd9C2ug/Hpf0K0Y6+WBOvZk7zghgpxPKyy+KBrrQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\inang\\.vscode\\MyProjem\\BookStore\\BookStoreServer\\BookStoreServer.WebApi\\BookStoreServer.WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\inang\\.nuget\\packages\\antlr\\3.5.0.2\\antlr.3.5.0.2.nupkg.sha512",
+    "C:\\Users\\inang\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\inang\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\inang\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\inang\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\inang\\.nuget\\packages\\bouncycastle.cryptography\\2.2.1\\bouncycastle.cryptography.2.2.1.nupkg.sha512",
@@ -18,7 +20,7 @@
     "C:\\Users\\inang\\.nuget\\packages\\mailkit\\4.1.0\\mailkit.4.1.0.nupkg.sha512",
     "C:\\Users\\inang\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.9\\microsoft.aspnetcore.openapi.7.0.9.nupkg.sha512",
     "C:\\Users\\inang\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
-    "C:\\Users\\inang\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\inang\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\inang\\.nuget\\packages\\microsoft.data.sqlclient\\5.1.1\\microsoft.data.sqlclient.5.1.1.nupkg.sha512",
     "C:\\Users\\inang\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\5.1.0\\microsoft.data.sqlclient.sni.runtime.5.1.0.nupkg.sha512",
     "C:\\Users\\inang\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.13\\microsoft.entityframeworkcore.7.0.13.nupkg.sha512",
