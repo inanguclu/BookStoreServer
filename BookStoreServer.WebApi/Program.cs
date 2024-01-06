@@ -1,3 +1,4 @@
+using BookStoreServer.WebApi.Context;
 using BookStoreServer.WebApi.Options;
 using BookStoreServer.WebApi.Utilities;
 
@@ -6,8 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-
-// Add services to the container.
+builder.Services.AddScoped<AppDbContext>();
 builder.Services.AddCors(cfr =>
 {
     cfr.AddDefaultPolicy(p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
