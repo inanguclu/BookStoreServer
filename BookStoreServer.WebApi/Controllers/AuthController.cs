@@ -44,4 +44,21 @@ public sealed class AuthController : ControllerBase
 
     }
 
+
+    [HttpPost]
+    public IActionResult Login(LoginDto request)
+    {
+        UserModel user=_context.Users.Where(p=>p.Username==request.UserNameOrEmail || p.Email==request.UserNameOrEmail).FirstOrDefault();  
+
+        if(user is  null)
+        {
+            return BadRequest(new {Message="Kullanıcı bulunamadı!"});
+        }
+        if(user.Password!=request.Password) 
+        {
+            return BadRequest(new {Message="şifre yanlış!"});
+        }
+        return Ok(user);
+    }
+
 }
