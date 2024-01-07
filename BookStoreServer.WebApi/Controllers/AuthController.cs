@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookStoreServer.WebApi.Context;
 using BookStoreServer.WebApi.Dtos;
+using BookStoreServer.WebApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UserModel = BookStoreServer.WebApi.Models.User;
@@ -58,7 +59,11 @@ public sealed class AuthController : ControllerBase
         {
             return BadRequest(new {Message="şifre yanlış!"});
         }
-        return Ok(user);
+
+        string token = JwtService.CreateToken(user);
+
+
+        return Ok(new {Token= token});
     }
 
 }

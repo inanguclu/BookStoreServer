@@ -21,9 +21,11 @@ public static class JwtService
             claims: claims,
             notBefore:DateTime.Now,
             expires:DateTime.Now.AddDays(1),
-            signingCredentials:new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
+            signingCredentials:new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("My secret key my secret key alsdkdsahfsdgfghjgg")),
+            SecurityAlgorithms.HmacSha256));
+        string token = new JwtSecurityTokenHandler().WriteToken(handler);
 
-        string token=string.Empty;
+
         return token;
 
 
