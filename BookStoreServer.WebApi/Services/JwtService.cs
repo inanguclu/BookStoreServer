@@ -12,16 +12,17 @@ public static class JwtService
     {
         var claims = new Claim[]
         {
-
+            new("UserId",user.Id.ToString()),
+            new("UserName",user.Name+" "+user.Lastname)
         };
 
         JwtSecurityToken handler = new(
             issuer: "Issuer",
             audience: "Audience",
             claims: claims,
-            notBefore:DateTime.Now,
-            expires:DateTime.Now.AddDays(1),
-            signingCredentials:new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("My secret key my secret key alsdkdsahfsdgfghjgg")),
+            notBefore: DateTime.Now,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("My secret key my secret key alsdkdsahfsdgfghjgg")),
             SecurityAlgorithms.HmacSha256));
         string token = new JwtSecurityTokenHandler().WriteToken(handler);
 
@@ -30,6 +31,6 @@ public static class JwtService
 
 
     }
-    
+
 
 }

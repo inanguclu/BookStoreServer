@@ -49,7 +49,8 @@ public sealed class AuthController : ControllerBase
     [HttpPost]
     public IActionResult Login(LoginDto request)
     {
-        UserModel user=_context.Users.Where(p=>p.Username==request.UserNameOrEmail || p.Email==request.UserNameOrEmail).FirstOrDefault();  
+        UserModel user=_context.Users.Where(p=>p.Username==request.UserNameOrEmail ||
+        p.Email==request.UserNameOrEmail).FirstOrDefault();  
 
         if(user is  null)
         {
