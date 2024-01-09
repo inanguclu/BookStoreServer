@@ -19,16 +19,16 @@ public sealed class ConfigurationsController : ControllerBase
         {
             var book = new Book()
             {
-                Title=$"Book{i}",
+                Title = $"Book{i}",
                 Author = $"Author{i}",
                 Summary = $"Summary{i}",
                 CoverImageUrl = $"https://m.media-amazon.com/images/I/819gVKYN7HL._AC_UF1000,1000_QL80_.jpg",
-                Price = new(i*2,"₺"),
-                Quantity = i*1,
+                Price = new(i * 2, "₺"),
+                Quantity = i * 1,
                 IsActive = true,
                 IsDeleted = false,
-                ISBN= $"ISBN{i}",
-                CreateAt= DateTime.Now
+                ISBN = $"ISBN{i}",
+                CreateAt = DateTime.UtcNow
             };
             books.Add(book);
 
