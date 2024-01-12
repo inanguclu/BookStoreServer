@@ -34,14 +34,14 @@ public sealed class AuthController : ControllerBase
         //    Username = request.Username,
         //};
 
-        UserModel user= _mapper.Map<UserModel>(request);        
+        UserModel user = _mapper.Map<UserModel>(request);
 
 
         _context.Add(user);
         _context.SaveChanges();
 
-        return Ok(new {Message="kayıt işlemi başarıyla tamamlandı"});
-       
+        return Ok(new { Message = "kayıt işlemi başarıyla tamamlandı" });
+
 
     }
 
@@ -49,22 +49,22 @@ public sealed class AuthController : ControllerBase
     [HttpPost]
     public IActionResult Login(LoginDto request)
     {
-        UserModel user=_context.Users.Where(p=>p.Username==request.UserNameOrEmail ||
-        p.Email==request.UserNameOrEmail).FirstOrDefault();  
+        UserModel user = _context.Users.Where(p => p.Username == request.UserNameOrEmail ||
+        p.Email == request.UserNameOrEmail).FirstOrDefault();
 
-        if(user is  null)
+        if (user is null)
         {
-            return BadRequest(new {Message="Kullanıcı bulunamadı!"});
+            return BadRequest(new { Message = "Kullanıcı bulunamadı!" });
         }
-        if(user.Password!=request.Password) 
+        if (user.Password != request.Password)
         {
-            return BadRequest(new {Message="şifre yanlış!"});
+            return BadRequest(new { Message = "şifre yanlış!" });
         }
 
         string token = JwtService.CreateToken(user);
 
 
-        return Ok(new {Token= token});
+        return Ok(new LoginResponseDto(Token: token, UserId: user.Id, UserName: user.GetName()));
     }
 
 }

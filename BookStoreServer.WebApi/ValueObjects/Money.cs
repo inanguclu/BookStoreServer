@@ -1,6 +1,6 @@
 ﻿namespace BookStoreServer.WebApi.ValueObjects;
 
-public sealed class Money
+public sealed record Money
 {
     public Money(decimal value,string currency)
     {
