@@ -20,7 +20,9 @@ public sealed class AppDbContext : DbContext
     public DbSet<BookCategory> BookCategories { get; set; }
     public DbSet<Order> Orders { get; set; }    
     public DbSet<OrderStatus> OrderStatuses { get; set; }
-    public   DbSet<User> Users { get; set; }
+    public DbSet<User> Users { get; set; }
+
+    public DbSet<ShoppingCart> ShoppingCarts { get; set; }  
     
 
 
@@ -54,6 +56,12 @@ public sealed class AppDbContext : DbContext
         //value object
 
         // value object kullanıyorsak seed data kullanamıyoruz 
+
+        modelBuilder.Entity<ShoppingCart>().OwnsOne(p => p.Price, price =>
+        {
+            price.Property(p => p.Value).HasColumnType("money");
+            price.Property(p => p.Currency).HasMaxLength(5);
+        });
 
         modelBuilder.Entity<Category>().HasData(//seed data basıyoruz 
             new Category { Id = 1, Name = "Korku", IsActive = true, IsDeleted = false },
