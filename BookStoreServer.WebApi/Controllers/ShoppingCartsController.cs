@@ -15,6 +15,30 @@ namespace BookStoreServer.WebApi.Controllers;
 [ApiController]
 public sealed class ShoppingCartsController : ControllerBase
 {
+
+    [HttpPost]
+    public IActionResult SetShoppingCartsFromLocalStorage(List<SetShoppingCartsDto> request)
+    {
+        AppDbContext context = new();
+        List<ShoppingCart> shoppingCarts = new();
+        foreach (var item in request)
+        {
+            ShoppingCart shoppingCart = new()
+            {
+                BookId = item.BookId,
+                UserId = item.UserId,
+                Price = item.Price,
+                Quantity = item.Quantity
+            };
+            shoppingCarts.Add(shoppingCart);
+            
+        }
+        context.AddRange(shoppingCarts);
+        context.SaveChanges();
+        return NoContent();
+    }
+
+
     [HttpPost]
     public async Task<IActionResult> Payment(PaymentDto requestDto)
     {//buraya mı gelmesi laızm ödemenin evet hocam gelmiyor :)
