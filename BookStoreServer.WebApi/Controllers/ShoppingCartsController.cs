@@ -9,12 +9,37 @@ using Iyzipay.Model;
 using Iyzipay.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreServer.WebApi.Controllers;
 [Route("api/[controller]/[action]")]
 [ApiController]
 public sealed class ShoppingCartsController : ControllerBase
 {
+    [HttpGet("{userId}")]
+    public IActionResult GetAll(int userId)
+    {
+        AppDbContext context = new();
+        List<Book> books = context.ShoppingCarts.AsNoTracking().Include(p=>p.Book).Select(s=>new Book()
+        {
+            Author=s.Book.Author,
+            CoverImageUrl=s.Book.CoverImageUrl,
+            CreateAt=s.Book.CreateAt,
+            Id=s.Book.Id,
+            IsActive=s.Book.IsActive,
+            ISBN=s.Book.ISBN,
+            IsDeleted=s.Book.IsDeleted,
+            Price=s.Price,
+            Quantity=s.Quantity,
+            Summary=s.Book.Summary,
+            Title=s.Book.Title,
+
+        }).ToList();
+        return Ok(books);
+    }
+
+
+
 
     [HttpPost]
     public IActionResult SetShoppingCartsFromLocalStorage(List<SetShoppingCartsDto> request)
