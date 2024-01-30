@@ -16,6 +16,23 @@ namespace BookStoreServer.WebApi.Controllers;
 [ApiController]
 public sealed class ShoppingCartsController : ControllerBase
 {
+
+    [HttpGet("{id}")]
+    public IActionResult RemoveById(int id)
+    {
+        AppDbContext context = new();
+        var shoppingCart =context.ShoppingCarts.Where(p=>p.Id==id).FirstOrDefault();
+        if (shoppingCart != null) 
+        { 
+            context.Remove(shoppingCart);
+            context.SaveChanges();
+        }
+
+        return NoContent();
+    }
+
+
+
     [HttpGet("{userId}")]
     public IActionResult GetAll(int userId)
     {
@@ -37,8 +54,6 @@ public sealed class ShoppingCartsController : ControllerBase
         }).ToList();
         return Ok(books);
     }
-
-
 
 
     [HttpPost]
