@@ -14,8 +14,33 @@ using Microsoft.EntityFrameworkCore;
 namespace BookStoreServer.WebApi.Controllers;
 [Route("api/[controller]/[action]")]
 [ApiController]
+
+public sealed record AddShoppingCartDto(
+    int BookId,
+    Money Price,
+    int Quantity,
+    int UserId
+    );
 public sealed class ShoppingCartsController : ControllerBase
 {
+    [HttpPost]
+    public IActionResult Add(AddShoppingCartDto request)
+    {
+        AppDbContext context = new ();
+        ShoppingCart cart = new()
+        {
+            BookId = request.BookId,
+            Price = request.Price,
+            Quantity = 1,
+            UserId = request.UserId,
+        };
+        context.Add(cart);
+        context.SaveChanges();
+        return NoContent();
+        
+    }
+
+
 
     [HttpGet("{id}")]
     public IActionResult RemoveById(int id)
@@ -37,7 +62,7 @@ public sealed class ShoppingCartsController : ControllerBase
     public IActionResult GetAll(int userId)
     {
         AppDbContext context = new();
-        List<Book> books = context.ShoppingCarts.AsNoTracking().Include(p=>p.Book).Select(s=>new Book()
+        List<ShoppingCartResponseDto> books = context.ShoppingCarts.AsNoTracking().Include(p=>p.Book).Select(s=>new ShoppingCartResponseDto()
         {
             Author=s.Book.Author,
             CoverImageUrl=s.Book.CoverImageUrl,
@@ -50,6 +75,7 @@ public sealed class ShoppingCartsController : ControllerBase
             Quantity=s.Quantity,
             Summary=s.Book.Summary,
             Title=s.Book.Title,
+            ShoppingCartId=s.Id
 
         }).ToList();
         return Ok(books);
