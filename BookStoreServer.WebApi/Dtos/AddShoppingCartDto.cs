@@ -1,5 +1,10 @@
-﻿namespace BookStoreServer.WebApi.Dtos;
+﻿using BookStoreServer.WebApi.ValueObjects;
 
-public class AddShoppingCartDto
-{
-}
+namespace BookStoreServer.WebApi.Dtos;
+
+public sealed record AddShoppingCartDto(
+    int BookId,
+    Money Price,
+    int Quantity,
+    int UserId
+    );

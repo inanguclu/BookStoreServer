@@ -15,12 +15,7 @@ namespace BookStoreServer.WebApi.Controllers;
 [Route("api/[controller]/[action]")]
 [ApiController]
 
-public sealed record AddShoppingCartDto(
-    int BookId,
-    Money Price,
-    int Quantity,
-    int UserId
-    );
+
 public sealed class ShoppingCartsController : ControllerBase
 {
     [HttpPost]
