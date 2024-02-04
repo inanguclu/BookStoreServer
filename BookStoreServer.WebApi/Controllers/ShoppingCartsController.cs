@@ -21,7 +21,7 @@ public sealed class ShoppingCartsController : ControllerBase
     [HttpPost]
     public IActionResult Add(AddShoppingCartDto request)
     {
-        AppDbContext context = new ();
+        AppDbContext context = new();
         ShoppingCart cart = new()
         {
             BookId = request.BookId,
@@ -32,7 +32,7 @@ public sealed class ShoppingCartsController : ControllerBase
         context.Add(cart);
         context.SaveChanges();
         return NoContent();
-        
+
     }
 
 
@@ -41,9 +41,9 @@ public sealed class ShoppingCartsController : ControllerBase
     public IActionResult RemoveById(int id)
     {
         AppDbContext context = new();
-        var shoppingCart =context.ShoppingCarts.Where(p=>p.Id==id).FirstOrDefault();
-        if (shoppingCart != null) 
-        { 
+        var shoppingCart = context.ShoppingCarts.Where(p => p.Id == id).FirstOrDefault();
+        if (shoppingCart != null)
+        {
             context.Remove(shoppingCart);
             context.SaveChanges();
         }
@@ -57,20 +57,20 @@ public sealed class ShoppingCartsController : ControllerBase
     public IActionResult GetAll(int userId)
     {
         AppDbContext context = new();
-        List<ShoppingCartResponseDto> books = context.ShoppingCarts.AsNoTracking().Include(p=>p.Book).Select(s=>new ShoppingCartResponseDto()
+        List<ShoppingCartResponseDto> books = context.ShoppingCarts.AsNoTracking().Include(p => p.Book).Select(s => new ShoppingCartResponseDto()
         {
-            Author=s.Book.Author,
-            CoverImageUrl=s.Book.CoverImageUrl,
-            CreateAt=s.Book.CreateAt,
-            Id=s.Book.Id,
-            IsActive=s.Book.IsActive,
-            ISBN=s.Book.ISBN,
-            IsDeleted=s.Book.IsDeleted,
-            Price=s.Price,
-            Quantity=s.Quantity,
-            Summary=s.Book.Summary,
-            Title=s.Book.Title,
-            ShoppingCartId=s.Id
+            Author = s.Book.Author,
+            CoverImageUrl = s.Book.CoverImageUrl,
+            CreateAt = s.Book.CreateAt,
+            Id = s.Book.Id,
+            IsActive = s.Book.IsActive,
+            ISBN = s.Book.ISBN,
+            IsDeleted = s.Book.IsDeleted,
+            Price = s.Price,
+            Quantity = s.Quantity,
+            Summary = s.Book.Summary,
+            Title = s.Book.Title,
+            ShoppingCartId = s.Id
 
         }).ToList();
         return Ok(books);
@@ -92,7 +92,7 @@ public sealed class ShoppingCartsController : ControllerBase
                 Quantity = item.Quantity
             };
             shoppingCarts.Add(shoppingCart);
-            
+
         }
         context.AddRange(shoppingCarts);
         context.SaveChanges();
@@ -183,50 +183,78 @@ public sealed class ShoppingCartsController : ControllerBase
 
         if (payment.Status == "success")
         {
-
-            string orderNumber = Order.GetNewOrderNumber();
-
-            List<Order> orders = new();
-            foreach (var book in requestDto.Books)
+            try
             {
-                Order order = new()
+
+                string orderNumber = Order.GetNewOrderNumber();
+
+                List<Order> orders = new();
+                foreach (var book in requestDto.Books)
+                {
+                    Order order = new()
+                    {
+                        OrderNumber = orderNumber,
+                        BookId = book.Id,
+                        Price = new Money(book.Price.Value, book.Price.Currency),
+                        PaymentDate = DateTime.UtcNow.AddHours(3),
+                        PaymentType = "Credit Cart",
+                        PaymentNumber = payment.PaymentId,
+                        CreatedAt = DateTime.UtcNow.AddHours(3)
+                    };
+                    orders.Add(order);
+                }
+
+                AppDbContext context = new();
+
+
+                OrderStatus orderStatus = new()
                 {
                     OrderNumber = orderNumber,
-                    BookId = book.Id,
-                    Price = new Money(book.Price.Value, book.Price.Currency),
-                    PaymentDate = DateTime.Now,
-                    PaymentType = "Credit Cart",
-                    PaymentNumber = payment.PaymentId,
-                    CreatedAt = DateTime.Now
+                    Status = OrderStatusEnum.AwaitingApproval,
+                    StatusDate = DateTime.UtcNow.AddHours(3),
                 };
-                orders.Add(order);
-            }
 
-            AppDbContext context = new();
+                context.Orders.AddRange(orders);
+                context.OrderStatuses.Add(orderStatus);
 
 
-            OrderStatus orderStatus = new()
-            {
-                OrderNumber = orderNumber,
-                Status = OrderStatusEnum.AwaitingApproval,
-                StatusDate = DateTime.Now,
-            };
-            
-            context.OrderStatuses.Add(orderStatus);
-            context.Orders.AddRange(orders);
-            context.SaveChanges();
+                //eger kullanıcı girişi yapıldıysa bu işlemi yap
+                Models.User user = context.Users.Find(requestDto.UserId);
+
+                if (user is not null)
+                {
+                    var shoppingCarts = context.ShoppingCarts.Where(p => p.UserId == requestDto.UserId).ToList();
+                    context.RemoveRange(shoppingCarts);
+                }
 
 
 
-            string response = await MailService.SendEmailAsync(requestDto.Buyer.Email, "Siparişiniz Alındı", $@"
+
+                context.SaveChanges();
+
+
+
+                string response = await MailService.SendEmailAsync(requestDto.Buyer.Email, "Siparişiniz Alındı", $@"
 
                 <h1>Siparişiniz Alındı</h1>
                 <p>Sipariş numaranız: {orderNumber}</p>
                 <p>Ödeme numaranız: {payment.PaymentId}</p>
                 <p>Ödeme tutarınız: {payment.PaidPrice}</p>
-                <p>Ödeme tarihiniz: {DateTime.Now}</p>
+                <p>Ödeme tarihiniz: {DateTime.UtcNow.AddHours(3)}</p>
                 <p>Ödeme tipiniz: Kredi Kartı</p>
                 <p>Ödeme durumunuz: Onay Bekliyor</p>");
+
+            }
+            catch (Exception)
+            {
+                
+
+                throw;
+            }
+
+            //ödeme başarılı oldu assagıdaki kayıt isleminde hata alırsak ödeme iade olmalı yada yöneticiye haber gitmeli
+
+
 
             return NoContent();
         }
