@@ -245,18 +245,21 @@ public sealed class ShoppingCartsController : ControllerBase
                 <p>Ödeme durumunuz: Onay Bekliyor</p>");
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                //ödeme kırılım ayarı yapmamız lazım ki iyzico ödeme iadesi yapabilsin
                 CreateRefundRequest refundRequest = new CreateRefundRequest();
-                refundRequest.ConversationId = "123456789";
+                refundRequest.ConversationId = request.ConversationId;
                 refundRequest.Locale=Locale.TR.ToString();
                 refundRequest.PaymentTransactionId = "1";
-                refundRequest.Price = "0.5";
+                refundRequest.Price = request.Price;
                 refundRequest.Ip = "85.34.78.112";
-                refundRequest.Currency=Currency.TRY.ToString();
+                refundRequest.Currency=currency.ToString();
 
 
                 Refund refund = Refund.Create(refundRequest, options);
+
+                return BadRequest(new { Message = "işlem sırasında bir hata aldık ve paranızı iade ettik lütfen daha sonra tekrar deneyiniz yada müsteri temsilcisi ile iletişime geçiniz!" });
             }
 
 
