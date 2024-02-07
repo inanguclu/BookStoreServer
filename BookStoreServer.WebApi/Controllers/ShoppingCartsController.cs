@@ -247,12 +247,17 @@ public sealed class ShoppingCartsController : ControllerBase
             }
             catch (Exception)
             {
-                
+                CreateRefundRequest refundRequest = new CreateRefundRequest();
+                refundRequest.ConversationId = "123456789";
+                refundRequest.Locale=Locale.TR.ToString();
+                refundRequest.PaymentTransactionId = "1";
+                refundRequest.Price = "0.5";
+                refundRequest.Ip = "85.34.78.112";
+                refundRequest.Currency=Currency.TRY.ToString();
 
-                throw;
+
+                Refund refund = Refund.Create(refundRequest, options);
             }
-
-            //ödeme başarılı oldu assagıdaki kayıt isleminde hata alırsak ödeme iade olmalı yada yöneticiye haber gitmeli
 
 
 
