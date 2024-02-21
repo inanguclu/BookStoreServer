@@ -18,10 +18,26 @@ namespace BookStoreServer.WebApi.Controllers;
 
 public sealed class ShoppingCartsController : ControllerBase
 {
+    private readonly AppDbContext _context;
+
+    public ShoppingCartsController(AppDbContext context)
+    {
+        _context = context;
+    }
+
     [HttpPost]
     public IActionResult Add(AddShoppingCartDto request)
     {
-        AppDbContext context = new();
+
+        Book book = _context.Books.Find(request.BookId);
+
+        if(book is null)
+        {
+            throw new Exception("");
+        }
+
+
+        
         ShoppingCart cart = new()
         {
             BookId = request.BookId,
@@ -29,8 +45,8 @@ public sealed class ShoppingCartsController : ControllerBase
             Quantity = 1,
             UserId = request.UserId,
         };
-        context.Add(cart);
-        context.SaveChanges();
+        _context.Add(cart);
+        _context.SaveChanges();
         return NoContent();
 
     }
@@ -40,12 +56,11 @@ public sealed class ShoppingCartsController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult RemoveById(int id)
     {
-        AppDbContext context = new();
-        var shoppingCart = context.ShoppingCarts.Where(p => p.Id == id).FirstOrDefault();
+        var shoppingCart = _context.ShoppingCarts.Where(p => p.Id == id).FirstOrDefault();
         if (shoppingCart != null)
         {
-            context.Remove(shoppingCart);
-            context.SaveChanges();
+            _context.Remove(shoppingCart);
+            _context.SaveChanges();
         }
 
         return NoContent();
@@ -56,8 +71,7 @@ public sealed class ShoppingCartsController : ControllerBase
     [HttpGet("{userId}")]
     public IActionResult GetAll(int userId)
     {
-        AppDbContext context = new();
-        List<ShoppingCartResponseDto> books = context.ShoppingCarts.AsNoTracking().Include(p => p.Book).Select(s => new ShoppingCartResponseDto()
+        List<ShoppingCartResponseDto> books = _context.ShoppingCarts.AsNoTracking().Include(p => p.Book).Select(s => new ShoppingCartResponseDto()
         {
             Author = s.Book.Author,
             CoverImageUrl = s.Book.CoverImageUrl,
@@ -80,7 +94,6 @@ public sealed class ShoppingCartsController : ControllerBase
     [HttpPost]
     public IActionResult SetShoppingCartsFromLocalStorage(List<SetShoppingCartsDto> request)
     {
-        AppDbContext context = new();
         List<ShoppingCart> shoppingCarts = new();
         foreach (var item in request)
         {
@@ -94,8 +107,8 @@ public sealed class ShoppingCartsController : ControllerBase
             shoppingCarts.Add(shoppingCart);
 
         }
-        context.AddRange(shoppingCarts);
-        context.SaveChanges();
+        _context.AddRange(shoppingCarts);
+        _context.SaveChanges();
         return NoContent();
     }
 
