@@ -25,6 +25,8 @@ public sealed class ShoppingCartsController : ControllerBase
         _context = context;
     }
 
+    //dil destegi için hata mesajlarını ayarlayacagız
+
     [HttpPost]
     public IActionResult Add(AddShoppingCartDto request)
     {
@@ -33,7 +35,12 @@ public sealed class ShoppingCartsController : ControllerBase
 
         if(book is null)
         {
-            throw new Exception("");
+            throw new Exception("Kitap bulunamadı!");
+        }
+
+        if (book.Quantity < request.Quantity) 
+        {
+            throw new Exception("Kitap stokta kalmadı!");
         }
 
 
@@ -45,6 +52,10 @@ public sealed class ShoppingCartsController : ControllerBase
             Quantity = 1,
             UserId = request.UserId,
         };
+
+        book.Quantity -= request.Quantity;
+
+        _context.Update(book);
         _context.Add(cart);
         _context.SaveChanges();
         return NoContent();
