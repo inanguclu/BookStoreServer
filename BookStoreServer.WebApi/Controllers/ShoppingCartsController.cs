@@ -27,6 +27,12 @@ public sealed class ShoppingCartsController : ControllerBase
 
     //dil destegi için hata mesajlarını ayarlayacagız
 
+    [HttpGet]
+    public IActionResult ChangeBookQuantity(int quantity,int bookId)
+    {
+        return NoContent();
+    }
+
     [HttpPost]
     public IActionResult Add(AddShoppingCartDto request)
     {
