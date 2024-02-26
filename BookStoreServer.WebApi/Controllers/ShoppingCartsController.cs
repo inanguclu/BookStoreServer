@@ -43,20 +43,35 @@ public sealed class ShoppingCartsController : ControllerBase
             throw new Exception("Kitap stokta kalmadı!");
         }
 
+        ShoppingCart cart = 
+            _context.ShoppingCarts
+            .Where(p=>p.BookId==request.BookId)
+            .FirstOrDefault();
 
-        
-        ShoppingCart cart = new()
+        if(cart is not null)
         {
-            BookId = request.BookId,
-            Price = request.Price,
-            Quantity = 1,
-            UserId = request.UserId,
-        };
+            cart.Quantity += 1;
+
+            _context.Update(cart);
+        }
+        else 
+        {
+            cart = new()
+            {
+                BookId = request.BookId,
+                Price = request.Price,
+                Quantity = 1,
+                UserId = request.UserId,
+            };
+
+            _context.Add(cart);
+
+        }
 
         book.Quantity -= request.Quantity;
 
         _context.Update(book);
-        _context.Add(cart);
+
         _context.SaveChanges();
         return NoContent();
 
@@ -126,15 +141,26 @@ public sealed class ShoppingCartsController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> Payment(PaymentDto requestDto)
-    {//buraya mı gelmesi laızm ödemenin evet hocam gelmiyor :)
+    {
+        
+        foreach (var item in requestDto.Books)
+        {
+            Book checkBook=_context.Books.Find(item.Id);
+            if (checkBook.Quantity < item.Quantity)
+            {
+                throw new Exception($"{item.Title}Kitap stokta kalmadı!");
+            }
+        }
+
         decimal total = 0;
-        decimal commission = 0;//komisyon
+        decimal commission = 0;
         foreach (var book in requestDto.Books)
         {
             total += book.Price.Value;
         }
         commission = total;
-        // commission = total * 1.2m / 100;
+       
+        
 
         Currency currency = Currency.TRY;
         string requestCurrency = requestDto.Books[0]?.Price?.Currency;
