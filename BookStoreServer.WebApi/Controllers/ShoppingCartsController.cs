@@ -27,9 +27,33 @@ public sealed class ShoppingCartsController : ControllerBase
 
     //dil destegi için hata mesajlarını ayarlayacagız
 
-    [HttpGet]
-    public IActionResult ChangeBookQuantity(int quantity,int bookId)
+    [HttpGet("{bookId}/{quantity}")]
+    public IActionResult ChangeBookQuantityInShoppingCart(int bookId,int quantity )
     {
+        ShoppingCart cart = _context.ShoppingCarts.Where(p => p.BookId == bookId).FirstOrDefault();
+        if (cart is null)
+        {
+            throw new Exception("Kitap sepette bulunamadı");
+
+        }
+
+        if (quantity <= 0)
+        {
+            _context.Remove(cart);
+        }
+        else
+        {
+            cart.Quantity = quantity;
+            Book book = _context.Books.Find(bookId);
+
+            if (book.Quantity < cart.Quantity)
+            {
+                throw new Exception("Stokta bu kadar kitap yok!");
+            }
+            _context.Update(cart);
+        }
+
+        _context.SaveChanges();
         return NoContent();
     }
 
@@ -39,28 +63,28 @@ public sealed class ShoppingCartsController : ControllerBase
 
         Book book = _context.Books.Find(request.BookId);
 
-        if(book is null)
+        if (book is null)
         {
             throw new Exception("Kitap bulunamadı!");
         }
 
-        if (book.Quantity < request.Quantity) 
+        if (book.Quantity < request.Quantity)
         {
             throw new Exception("Kitap stokta kalmadı!");
         }
 
-        ShoppingCart cart = 
+        ShoppingCart cart =
             _context.ShoppingCarts
-            .Where(p=>p.BookId==request.BookId)
+            .Where(p => p.BookId == request.BookId)
             .FirstOrDefault();
 
-        if(cart is not null)
+        if (cart is not null)
         {
             cart.Quantity += 1;
 
             _context.Update(cart);
         }
-        else 
+        else
         {
             cart = new()
             {
@@ -148,10 +172,10 @@ public sealed class ShoppingCartsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Payment(PaymentDto requestDto)
     {
-        
+
         foreach (var item in requestDto.Books)
         {
-            Book checkBook=_context.Books.Find(item.Id);
+            Book checkBook = _context.Books.Find(item.Id);
             if (checkBook.Quantity < item.Quantity)
             {
                 throw new Exception($"{item.Title}Kitap stokta kalmadı!");
@@ -165,8 +189,8 @@ public sealed class ShoppingCartsController : ControllerBase
             total += book.Price.Value;
         }
         commission = total;
-       
-        
+
+
 
         Currency currency = Currency.TRY;
         string requestCurrency = requestDto.Books[0]?.Price?.Currency;
@@ -306,11 +330,11 @@ public sealed class ShoppingCartsController : ControllerBase
                 //ödeme kırılım ayarı yapmamız lazım ki iyzico ödeme iadesi yapabilsin
                 CreateRefundRequest refundRequest = new CreateRefundRequest();
                 refundRequest.ConversationId = request.ConversationId;
-                refundRequest.Locale=Locale.TR.ToString();
+                refundRequest.Locale = Locale.TR.ToString();
                 refundRequest.PaymentTransactionId = "1";
                 refundRequest.Price = request.Price;
                 refundRequest.Ip = "85.34.78.112";
-                refundRequest.Currency=currency.ToString();
+                refundRequest.Currency = currency.ToString();
 
 
                 Refund refund = Refund.Create(refundRequest, options);
