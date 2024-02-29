@@ -31,24 +31,30 @@ public sealed class ShoppingCartsController : ControllerBase
     public IActionResult ChangeBookQuantityInShoppingCart(int bookId,int quantity )
     {
         ShoppingCart cart = _context.ShoppingCarts.Where(p => p.BookId == bookId).FirstOrDefault();
+
         if (cart is null)
         {
             throw new Exception("Kitap sepette bulunamadı");
 
         }
 
+        Book book = _context.Books.Find(bookId);
+
+
         if (quantity <= 0)
         {
+            book.Quantity += 1;
             _context.Remove(cart);
+            _context.Update(book);
         }
         else
         {
             cart.Quantity = quantity;
-            Book book = _context.Books.Find(bookId);
+
 
             if (book.Quantity < cart.Quantity)
             {
-                throw new Exception("Stokta bu kadar kitap yok!");
+                throw new Exception("Stokta bu kadar adet kitap yok!");
             }
             _context.Update(cart);
         }
@@ -115,6 +121,11 @@ public sealed class ShoppingCartsController : ControllerBase
         var shoppingCart = _context.ShoppingCarts.Where(p => p.Id == id).FirstOrDefault();
         if (shoppingCart != null)
         {
+            Book book = _context.Books.Find(shoppingCart.BookId);
+            book.Quantity += shoppingCart.Quantity;
+
+
+            _context.Books.Update(book);
             _context.Remove(shoppingCart);
             _context.SaveChanges();
         }
