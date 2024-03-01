@@ -28,6 +28,19 @@ public sealed class ShoppingCartsController : ControllerBase
     //dil destegi için hata mesajlarını ayarlayacagız
 
     [HttpGet("{bookId}/{quantity}")]
+    public IActionResult CheckBookQuantityIsAvailable(int bookId,int quantity)
+    {
+        Book book = _context.Books.Find(bookId);
+        if (book.Quantity < quantity)
+        {
+            throw new Exception("Stokta bu kadar adet kitap yok!");
+        }
+
+
+        return NoContent();
+    }
+
+    [HttpGet("{bookId}/{quantity}")]
     public IActionResult ChangeBookQuantityInShoppingCart(int bookId,int quantity )
     {
         ShoppingCart cart = _context.ShoppingCarts.Where(p => p.BookId == bookId).FirstOrDefault();
