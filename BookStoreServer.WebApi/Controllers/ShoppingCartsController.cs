@@ -117,10 +117,6 @@ public sealed class ShoppingCartsController : ControllerBase
 
         }
 
-        book.Quantity -= request.Quantity;
-
-        _context.Update(book);
-
         _context.SaveChanges();
         return NoContent();
 
@@ -134,11 +130,6 @@ public sealed class ShoppingCartsController : ControllerBase
         var shoppingCart = _context.ShoppingCarts.Where(p => p.Id == id).FirstOrDefault();
         if (shoppingCart != null)
         {
-            Book book = _context.Books.Find(shoppingCart.BookId);
-            book.Quantity += shoppingCart.Quantity;
-
-
-            _context.Books.Update(book);
             _context.Remove(shoppingCart);
             _context.SaveChanges();
         }
@@ -295,6 +286,7 @@ public sealed class ShoppingCartsController : ControllerBase
                 List<Order> orders = new();
                 foreach (var book in requestDto.Books)
                 {
+                    Book changeBookQuantity = _context.Books.Find(book.Id);
                     Order order = new()
                     {
                         OrderNumber = orderNumber,
