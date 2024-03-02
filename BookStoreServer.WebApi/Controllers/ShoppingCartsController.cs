@@ -287,10 +287,13 @@ public sealed class ShoppingCartsController : ControllerBase
                 foreach (var book in requestDto.Books)
                 {
                     Book changeBookQuantity = _context.Books.Find(book.Id);
+                    changeBookQuantity.Quantity-=book.Quantity;
+                    _context.Update(changeBookQuantity);
                     Order order = new()
                     {
                         OrderNumber = orderNumber,
                         BookId = book.Id,
+                        Quantity = book.Quantity,
                         Price = new Money(book.Price.Value, book.Price.Currency),
                         PaymentDate = DateTime.UtcNow.AddHours(3),
                         PaymentType = "Credit Cart",
