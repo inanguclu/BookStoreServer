@@ -3,17 +3,19 @@ using BookStoreServer.WebApi.ValueObjects;
 
 namespace BookStoreServer.WebApi.Dtos;
 
-public sealed record OrderListDto(
-    int Id,
-    string OrderNumber,
-    Book Book,
-    int Quantity,
-    Money Price,
-    DateTime CreatedAt,
-    DateTime PaymentDate,
-    string PaymentType,
-    string PaymentNumber,
-    List<OrderStatus> orderStatuses,
-    string Comment=null,
-    short? Raiting=null
-    );
+public sealed record OrderListDto
+{
+    public int Id { get; set; }
+    public string OrderNumber { get; set; }
+    public Book Book { get; set; }
+    public int Quantity { get; set; }
+    public Money Price { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime PaymentDate { get; set; }
+    public string PaymentType { get; set; }
+    public string PaymentNumber { get; set; }
+    public  List<OrderStatus> OrderStatuses { get; set; }
+    public string Comment { get; set; }
+    public short? Raiting { get; set; }
+
+}

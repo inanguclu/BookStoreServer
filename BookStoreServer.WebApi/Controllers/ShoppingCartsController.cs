@@ -298,7 +298,8 @@ public sealed class ShoppingCartsController : ControllerBase
                         PaymentDate = DateTime.UtcNow.AddHours(3),
                         PaymentType = "Credit Cart",
                         PaymentNumber = payment.PaymentId,
-                        CreatedAt = DateTime.UtcNow.AddHours(3)
+                        CreatedAt = DateTime.UtcNow.AddHours(3),
+                        UserId=requestDto.UserId
                     };
                     orders.Add(order);
                 }

@@ -2,6 +2,7 @@
 using BookStoreServer.WebApi.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreServer.WebApi.Controllers;
 [Route("api/[controller]")]
@@ -16,11 +17,31 @@ public sealed class OrdersController : ControllerBase
     }
 
     [HttpGet("{userId}")]
-    public IActionResult GetAllByUserId(string userId)
+    public IActionResult GetAllByUserId(int userId)
     {
 
-        List<OrderListDto> orders = new List<OrderListDto>();   
+        List<OrderListDto> orders =
+            _context.Orders
+            .Where(p => p.UserId == userId)
+            .Include(p => p.Book)
+            .Select(s => new OrderListDto()
+            {
+                Id = s.Id,
+                Raiting=s.Raiting,
+                Book=s.Book,
+                Comment=s.Comment,
+                CreatedAt=s.CreatedAt,
+                OrderNumber=s.OrderNumber,
+                PaymentDate=s.PaymentDate,
+                PaymentNumber=s.PaymentNumber,  
+                PaymentType=s.PaymentType,
+                Price=s.Price,
+                Quantity=s.Quantity,
+                OrderStatuses=_context.OrderStatuses.Where(p=>p.OrderNumber==s.OrderNumber).ToList()
+            })
+            .OrderByDescending(p => p.CreatedAt)  
+            .ToList();
 
-        return NoContent();
+        return Ok(orders);
     }
 }
