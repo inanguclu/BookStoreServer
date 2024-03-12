@@ -276,8 +276,10 @@ public sealed class ShoppingCartsController : ControllerBase
 
         Payment payment = Iyzipay.Model.Payment.Create(request, options);
 
-        if (payment.Status == "success")
-        {
+
+        //burda hata var bakılacak
+        //if (payment.Status == "success")
+        //{
             try
             {
 
@@ -365,11 +367,11 @@ public sealed class ShoppingCartsController : ControllerBase
 
 
             return NoContent();
-        }
-        else
-        {
-            return BadRequest(payment.ErrorMessage);
-        }
+        //}
+        //else
+        //{
+        //    return BadRequest(payment.ErrorMessage);
+        //}
     }
 }
 
